@@ -1,8 +1,9 @@
 package com.example.demo.util;
 
 
-import com.example.final1.models.Person;
-import com.example.final1.servises.RegistrationService;
+import com.example.demo.models.Person;
+import com.example.demo.servises.RegistrationService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

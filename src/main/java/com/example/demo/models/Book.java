@@ -1,6 +1,5 @@
 package com.example.demo.models;
 
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,7 +38,6 @@ public class Book {
     boolean isAccess;
     @Column(name = "book_genres")
     String book_genres;
-
 
 
 

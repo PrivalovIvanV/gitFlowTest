@@ -1,7 +1,6 @@
 package com.example.demo.models;
 
 
-
 import com.example.demo.util.UserRole;
 import lombok.AccessLevel;
 import lombok.Data;

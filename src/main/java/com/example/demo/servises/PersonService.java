@@ -1,9 +1,9 @@
 package com.example.demo.servises;
 
 
-
 import com.example.demo.models.Person;
 import com.example.demo.repositories.PersonRepo;
+import com.example.demo.security.PersonDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,21 +24,22 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PersonService {
+public class PersonService implements UserDetailsService {
 
     private final JdbcTemplate jdbcTemplate;
     private final PersonRepo repo;
 
 
     public boolean isAuth(){
-        int currentId = 1;
+        int currentId = getCurrentUserID();
         if ( currentId != -1){
             return true;
         }
         return false;
     }           //проверка на авторизацию пользователя в системе
+
     public Person getCurrentUser(){
-        int currentId = 1;
+        int currentId = getCurrentUserID();
         if ( currentId != -1){
             return repo.findById(currentId).get();
         }
@@ -64,4 +65,30 @@ public class PersonService {
 
 
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Person> user = repo.findPersonByEmail(email); //пытаемся получить из БД человека с Таким Email-ом
+
+        if(user.isEmpty()) {
+            log.info("Попытка войти в систему под не зарегистрированной почтой {}", email);
+            throw new UsernameNotFoundException("Пользователь с такой почтой не зарегистрирован");
+        }
+        return new PersonDetails(user.get());
+    }
+
+
+
+
+
+
+
+    private static int getCurrentUserID(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            Person user = ((PersonDetails) authentication.getPrincipal()).getPerson();
+            return user.getId();
+        }catch (Exception e){
+            return -1;
+        }
+    }
 }
