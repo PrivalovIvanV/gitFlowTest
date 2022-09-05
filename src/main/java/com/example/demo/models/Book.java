@@ -42,7 +42,6 @@ public class Book {
 
 
 
-
     public boolean isOverdue(){
         if (taken_data == null) {
 

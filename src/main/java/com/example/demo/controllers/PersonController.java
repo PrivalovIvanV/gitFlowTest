@@ -63,6 +63,7 @@ public class PersonController {
                                 @RequestParam("file1") MultipartFile file1){
 
         if (bindingResult.hasErrors()){return "/person/edit";}
+
         personSer.UpdatePerson(person);
         log.info("Попытка обновить данные человека с почтой {}", person.getEmail());
         return "redirect:/account";}

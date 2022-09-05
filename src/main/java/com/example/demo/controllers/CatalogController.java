@@ -5,6 +5,7 @@ import com.example.demo.models.Book;
 import com.example.demo.models.Person;
 import com.example.demo.servises.BookService;
 import com.example.demo.servises.PersonService;
+import com.example.demo.util.BookFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import java.util.List;
 public class CatalogController {
 
     private final BookService bookService;
+    private final BookFilter bookFilter;
     private final PersonService personSer;
 
 
@@ -51,13 +53,35 @@ public class CatalogController {
 
 
     @GetMapping
-    public String catalog(Model model){
+    public String catalog(@RequestParam(name = "q", required = false) String qr,
+                          @RequestParam(name = "page", required = false) Integer req,
+                          @RequestParam(name = "CS", required = false) boolean CS,
+                          @RequestParam(name = "fan", required = false) boolean FICTION,
+                          @RequestParam(name = "hist", required = false) boolean HISTORY,
+                          @RequestParam(name = "comics", required = false) boolean COMICS,
+                          @RequestParam(name = "isAll", required = false) String isAll,
+                          Model model){
+
+        bookFilter.updateFilter(CS, FICTION, HISTORY, COMICS, isAll);
+        // Этот блок создан, чтобы при запросе без параметров
+        // система отработала бы хорошо
+        if (req != null) lastPage = req.intValue();
+        if (qr != null) lastSearch = qr;
+        if (qr != null && req == null) lastPage = 0;     //Если у нас новый поисковой запрос, то lastPage сбрасывается
+//        if (qr != null && isAll == null && req == null) bookFilter.clear();  //Если у нас новый поисковой запрос, то фильтры сбрасывается
+        if (qr != null && isAll != null) lastSearch = "";
+        if (qr == null && req == null && isAll != null) lastPage=0;
+
 
         List<Integer> pageIterator;
         List<Book> listBook = bookService.findAll(lastSearch, lastPage);
+        if (bookFilter.isHaveAFilter()){
+            pageIterator = PageIterator(bookService.findAllWithFilter(lastSearch));
+        }else
             pageIterator = PageIterator(bookService.findAll(lastSearch));
 
 
+        model.addAttribute("bookFilter", bookFilter);
         model.addAttribute("currentPage", lastPage);
         model.addAttribute("searchVal", lastSearch);
         model.addAttribute("bookList", listBook);

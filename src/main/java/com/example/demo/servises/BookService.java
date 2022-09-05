@@ -4,6 +4,7 @@ package com.example.demo.servises;
 import com.example.demo.models.Book;
 import com.example.demo.models.Person;
 import com.example.demo.repositories.BookRepo;
+import com.example.demo.util.BookFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final BookFilter bookFilter;
     private final BookRepo bookRepo;
     private final PersonService personService;
 
@@ -32,6 +34,25 @@ public class BookService {
     public List<Book> findAll(String q){ return bookRepo.findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(q, q);}
     public List<Book> findAll(String q, int page){
 
+        if (bookFilter.isHaveAFilter()){
+            List<Book> unSortedList = findAllWithFilter(q);
+
+            int size = unSortedList.size();
+            int countOfPage = size/15;
+            if (size%15 != 0) countOfPage++;
+            log.warn("Мы вычислили что из массива в {} элементов можно сделать {} страниц", size, countOfPage);
+
+            //////Мы приготовили все и нам остлось только раскидать большое количество книг по 15 штук на страничку
+
+            //List<List<Book>> containerWithPages = new ArrayList<>();
+            if (page >= countOfPage) return new ArrayList<>();//если пользователь запросит не возможную страницу, то мы эту ошибку перехватим
+
+            //List<Book> finalList = new ArrayList<>();
+            if (page == ( countOfPage - 1)) {
+                return unSortedList.subList(page * 15, size);
+            }else return unSortedList.subList(page*15, ( page + 1 ) * 15);
+
+        }else
 
         return bookRepo.findAllByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(q, q, PageRequest.of(page, 15)).getContent();
     }
@@ -72,11 +93,23 @@ public class BookService {
     public List<Book> findAllWithFilter(String q){
         List<Book> finalList = new ArrayList<>();
         List<Book> untreatedList = bookRepo.findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(q, q);
+        List<String> filterList = bookFilter.getFilterList();
         log.info("Количество книг до сортировки: {}", untreatedList.size());
-        finalList = untreatedList;
+        if (filterList.size() != 0) {
+            for (String filter : filterList) {
+                for (Book book : untreatedList){
+                    if (book.getBook_genres().equals(filter))
+                        finalList.add(book);
+                }
+
+            }
+        } else finalList = untreatedList;
 //        log.warn("Количество книг после первого цикла сортировки: {}", finalList.size());
 
-
+        if (!bookFilter.isAll()){
+            finalList = finalList.stream().filter(book -> book.isAccess()).collect(Collectors.toList());
+        }
+        log.info("Количество книг после второго цикла сортировки: {}, isAll = {}", finalList.size(), bookFilter.isAll());
         /////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////На этом моменте мы закончили с сортировкой всех книг по нужным нам фильтрам///////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////

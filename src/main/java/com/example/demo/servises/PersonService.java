@@ -38,6 +38,10 @@ public class PersonService implements UserDetailsService {
         return false;
     }           //проверка на авторизацию пользователя в системе
 
+    private int getCurrentUserID() {
+        return 0;
+    }
+
     public Person getCurrentUser(){
         int currentId = getCurrentUserID();
         if ( currentId != -1){
@@ -57,11 +61,8 @@ public class PersonService implements UserDetailsService {
         );
     }
 
-
     @Transactional
     public void save(Person person){ repo.save(person); };
-
-
 
 
 
@@ -76,19 +77,4 @@ public class PersonService implements UserDetailsService {
         return new PersonDetails(user.get());
     }
 
-
-
-
-
-
-
-    private static int getCurrentUserID(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        try {
-            Person user = ((PersonDetails) authentication.getPrincipal()).getPerson();
-            return user.getId();
-        }catch (Exception e){
-            return -1;
-        }
-    }
 }
