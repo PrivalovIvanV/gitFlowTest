@@ -1,6 +1,8 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.imageAdapter.imageModels.BookImage;
+import com.example.demo.imageAdapter.service.BookImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Controller;

@@ -123,7 +123,7 @@ public class PersonService implements UserDetailsService {
         image.setBytes(file.getBytes());
         return image;
     }
-    public static int getCurrentUserID(){
+    private static int getCurrentUserID(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
             Person user = ((PersonDetails) authentication.getPrincipal()).getPerson();
