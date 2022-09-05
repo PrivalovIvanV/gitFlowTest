@@ -65,10 +65,7 @@ public class PersonController {
 
         if (bindingResult.hasErrors()){return "/person/edit";}
 
-<<<<<<< HEAD
-=======
         personSer.addAvatar(file1);
->>>>>>> featureImageAdapter
         personSer.UpdatePerson(person);
         log.info("Попытка обновить данные человека с почтой {}", person.getEmail());
         return "redirect:/account";}

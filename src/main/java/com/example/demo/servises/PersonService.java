@@ -40,10 +40,6 @@ public class PersonService implements UserDetailsService {
         return false;
     }           //проверка на авторизацию пользователя в системе
 
-    private int getCurrentUserID() {
-        return 0;
-    }
-
     public Person getCurrentUser(){
         int currentId = getCurrentUserID();
         if ( currentId != -1){
@@ -77,8 +73,6 @@ public class PersonService implements UserDetailsService {
             person.setAvatar(image);
             System.out.println(userHaveAvatar());
 
-<<<<<<< HEAD
-=======
 
             if (userHaveAvatar()){
                 int image_id = imageService.getImageByPersonId(getCurrentUserID()).getId();
@@ -90,7 +84,6 @@ public class PersonService implements UserDetailsService {
         }
     }
 
->>>>>>> featureImageAdapter
     @Transactional
     public void save(Person person){ repo.save(person); };
 
@@ -101,13 +94,10 @@ public class PersonService implements UserDetailsService {
         person.setAvatar(null);
         repo.save(person);
 
-<<<<<<< HEAD
-=======
         jdbcTemplate.update("delete from avatar_images where person_id = ?", getCurrentUserID());
     }
 
 
->>>>>>> featureImageAdapter
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Person> user = repo.findPersonByEmail(email); //пытаемся получить из БД человека с Таким Email-ом
@@ -119,8 +109,6 @@ public class PersonService implements UserDetailsService {
         return new PersonDetails(user.get());
     }
 
-<<<<<<< HEAD
-=======
 
 
 
@@ -144,5 +132,4 @@ public class PersonService implements UserDetailsService {
             return -1;
         }
     }
->>>>>>> featureImageAdapter
 }

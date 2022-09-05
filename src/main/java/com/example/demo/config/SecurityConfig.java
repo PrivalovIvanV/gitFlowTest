@@ -1,4 +1,4 @@
-package com.example.demo.controllers.config;
+package com.example.demo.config;
 
 
 

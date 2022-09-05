@@ -34,7 +34,6 @@ public class BookService {
     public List<Book> findAll(String q){ return bookRepo.findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(q, q);}
     public List<Book> findAll(String q, int page){
 
-<<<<<<< HEAD
         if (bookFilter.isHaveAFilter()){
             List<Book> unSortedList = findAllWithFilter(q);
 
@@ -55,8 +54,6 @@ public class BookService {
 
         }else
 
-=======
->>>>>>> featureImageAdapter
         return bookRepo.findAllByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(q, q, PageRequest.of(page, 15)).getContent();
     }
     public List<Book> findAllForPerson(int id){

@@ -65,7 +65,6 @@ public class Person{
     PersonImage avatar;
 
 
-
     public void addBook(Book book){
         personLibrary.add(book);
     }
