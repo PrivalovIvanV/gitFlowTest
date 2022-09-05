@@ -53,8 +53,11 @@ public class CatalogController {
     @GetMapping
     public String catalog(Model model){
 
+
+
         List<Integer> pageIterator;
         List<Book> listBook = bookService.findAll(lastSearch, lastPage);
+
             pageIterator = PageIterator(bookService.findAll(lastSearch));
 
 

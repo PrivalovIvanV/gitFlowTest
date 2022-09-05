@@ -40,6 +40,8 @@ public class Book {
     String book_genres;
 
 
+    @OneToOne(mappedBy = "book")
+    BookImage bookImage;
 
 
 
