@@ -1,6 +1,7 @@
 package com.example.demo.servises;
 
-
+import com.example.demo.imageAdapter.imageModels.PersonImage;
+import com.example.demo.imageAdapter.service.ImageService;
 import com.example.demo.models.Person;
 import com.example.demo.repositories.PersonRepo;
 import com.example.demo.security.PersonDetails;
@@ -28,6 +29,7 @@ public class PersonService implements UserDetailsService {
 
     private final JdbcTemplate jdbcTemplate;
     private final PersonRepo repo;
+    private final ImageService imageService;
 
 
     public boolean isAuth(){
@@ -49,7 +51,11 @@ public class PersonService implements UserDetailsService {
         }
         return null;
     }    //получение текущего пользователя
-
+    public boolean userHaveAvatar(){
+        PersonImage image = imageService.getImageByPersonId(getCurrentUserID());
+        if (image != null) return true;
+        return false;
+    }
 
 
     @Transactional
@@ -60,12 +66,48 @@ public class PersonService implements UserDetailsService {
                 person.getEmail()
         );
     }
+    @SneakyThrows
+    @Transactional
+    public void addAvatar(MultipartFile file){
+        PersonImage image;
+        if (file.getSize() != 0) {
+            Person person = getCurrentUser();
+            image = toImageEntity(file);
+            image.setUser(person);
+            person.setAvatar(image);
+            System.out.println(userHaveAvatar());
 
+<<<<<<< HEAD
+=======
+
+            if (userHaveAvatar()){
+                int image_id = imageService.getImageByPersonId(getCurrentUserID()).getId();
+                image.setId(image_id);
+                imageService.savePersonImage(image);
+            } else imageService.savePersonImage(image);
+
+            repo.save(person);
+        }
+    }
+
+>>>>>>> featureImageAdapter
     @Transactional
     public void save(Person person){ repo.save(person); };
 
 
+    @Transactional
+    public void deleteAvatar(){
+        Person person = repo.findById(getCurrentUserID()).get();
+        person.setAvatar(null);
+        repo.save(person);
 
+<<<<<<< HEAD
+=======
+        jdbcTemplate.update("delete from avatar_images where person_id = ?", getCurrentUserID());
+    }
+
+
+>>>>>>> featureImageAdapter
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Person> user = repo.findPersonByEmail(email); //пытаемся получить из БД человека с Таким Email-ом
@@ -77,4 +119,30 @@ public class PersonService implements UserDetailsService {
         return new PersonDetails(user.get());
     }
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+    private PersonImage toImageEntity(MultipartFile file) throws IOException {
+        PersonImage image = new PersonImage();
+        image.setName(file.getName());
+        image.setOriginalFileName(file.getOriginalFilename());
+        image.setContentType(file.getContentType());
+        image.setSize(file.getSize());
+        image.setBytes(file.getBytes());
+        return image;
+    }
+    private static int getCurrentUserID(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            Person user = ((PersonDetails) authentication.getPrincipal()).getPerson();
+            return user.getId();
+        }catch (Exception e){
+            return -1;
+        }
+    }
+>>>>>>> featureImageAdapter
 }

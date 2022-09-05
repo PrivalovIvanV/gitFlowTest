@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import com.example.demo.imageAdapter.imageModels.BookImage;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,8 @@ public class Book {
     String book_genres;
 
 
+    @OneToOne(mappedBy = "book")
+    BookImage bookImage;
 
 
     public boolean isOverdue(){

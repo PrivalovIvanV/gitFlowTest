@@ -73,11 +73,17 @@ public class CatalogController {
         if (qr == null && req == null && isAll != null) lastPage=0;
 
 
+
+
         List<Integer> pageIterator;
         List<Book> listBook = bookService.findAll(lastSearch, lastPage);
+<<<<<<< HEAD
         if (bookFilter.isHaveAFilter()){
             pageIterator = PageIterator(bookService.findAllWithFilter(lastSearch));
         }else
+=======
+
+>>>>>>> featureImageAdapter
             pageIterator = PageIterator(bookService.findAll(lastSearch));
 
 

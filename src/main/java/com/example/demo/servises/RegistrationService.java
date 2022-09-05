@@ -2,6 +2,7 @@ package com.example.demo.servises;
 
 
 
+import com.example.demo.imageAdapter.imageModels.PersonImage;
 import com.example.demo.models.Person;
 import com.example.demo.repositories.PersonRepo;
 import com.example.demo.util.UserRole;
@@ -45,7 +46,15 @@ public class RegistrationService {
 
     public boolean isExist(String email){ return repo.findPersonByEmail(email).isPresent();} // проверяем на совпадение
 
-
+    private PersonImage toImageEntity(MultipartFile file) throws IOException {
+        PersonImage image = new PersonImage();
+        image.setName(file.getName());
+        image.setOriginalFileName(file.getOriginalFilename());
+        image.setContentType(file.getContentType());
+        image.setSize(file.getSize());
+        image.setBytes(file.getBytes());
+        return image;
+    }
 
 
 }

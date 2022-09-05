@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 
+import com.example.demo.imageAdapter.imageModels.PersonImage;
 import com.example.demo.util.UserRole;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -60,6 +61,8 @@ public class Person{
     @OneToMany(mappedBy = "owner")
     List<Book> personLibrary;
 
+    @OneToOne(mappedBy = "user")
+    PersonImage avatar;
 
 
 

@@ -49,6 +49,7 @@ public class PersonController {
         Person bufForClone = personSer.getCurrentUser();
         Person updatedPerson = new Person(bufForClone);
         model.addAttribute("currentUser", updatedPerson);
+        personSer.deleteAvatar();
         return "person/edit";
     }
 
@@ -64,6 +65,10 @@ public class PersonController {
 
         if (bindingResult.hasErrors()){return "/person/edit";}
 
+<<<<<<< HEAD
+=======
+        personSer.addAvatar(file1);
+>>>>>>> featureImageAdapter
         personSer.UpdatePerson(person);
         log.info("Попытка обновить данные человека с почтой {}", person.getEmail());
         return "redirect:/account";}
